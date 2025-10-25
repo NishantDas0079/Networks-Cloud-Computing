@@ -367,3 +367,30 @@ Networking Stack:
 TUN/TAP → OVS/Flannel/Cilium → VXLAN (overlay) → Physical Network
 Zero-copy vs Packet-copy tradeoffs optimize performance
 ```
+
+
+
+| Component | OSI Layer(s) | Primary Function | Interrelationships | Use Case Context |
+|-----------|-------------|------------------|-------------------|------------------|
+| **TUN** | Layer 3 (Network) | Virtual network tunnel device operating at IP layer | Works with packet routing, used by VPNs and container networking; interfaces between user space and kernel space | Point-to-point IP tunneling, routing packets |
+| **TAP** | Layer 2 (Data Link) | Virtual network device operating at Ethernet frame level | Similar to TUN but handles Ethernet frames; used by libvirt for VM networking; connects via veth pairs and bridges | VM networking, bridging, full Ethernet frame handling |
+| **OVS (Open vSwitch)** | Layer 2-3 (Data Link/Network) | Virtual multilayer network switch | Can work with VXLAN, VLAN, veth pairs; alternative to Linux Bridge; supports advanced features like flow tables and tunneling | SDN, container/VM networking, complex routing |
+| **VXLAN** | Layer 2 over Layer 3 | Network virtualization/overlay protocol | Used by Flannel and other CNIs; encapsulates L2 frames in UDP packets; creates overlay networks across L3 boundaries | Container network overlays, multi-host networking |
+| **VLAN** | Layer 2 (Data Link) | Network segmentation using tagging | Works with switches (OVS, Linux Bridge); provides logical network separation on shared physical infrastructure | Network isolation, multi-tenancy |
+| **Flannel (CNI)** | Layer 2-3 (Data Link/Network) | Container Network Interface plugin | Implements overlay networks using VXLAN, host-gw, or other backends; assigns pod IP ranges; works with veth pairs | Kubernetes pod networking, simple overlay solution |
+| **Cilium** | Layer 3-7 (Network to Application) | Advanced CNI with eBPF-based networking | Provides pod networking, security policies, load balancing; can use VXLAN or native routing; leverages kernel eBPF for performance | Kubernetes networking with security and observability |
+| **Packet Copy** | Layer 2-7 (varies) | Traditional data transfer method | Used when data crosses user space/kernel space boundary; involves memory copy operations; contrasts with zero copy | Standard packet processing, less efficient |
+| **Zero Copy** | Layer 2-7 (varies) | Optimized data transfer technique | Reduces CPU overhead by minimizing copies between user/kernel space; used in high-performance networking | Performance optimization, bypassing memory copies |
+| **User Space ↔ Kernel Space** | All Layers | Boundary between application and OS kernel | TUN/TAP devices cross this boundary; packet copy vs zero copy affects performance here; system calls cross this boundary | All network operations involving applications |
+| **Libvirt** | Management Layer (spans multiple) | Virtualization management library | Uses TAP devices and bridges for VM networking; manages virtual network configurations | VM lifecycle and network management |
+| **Node and Pods** | Conceptual (Infrastructure) | Kubernetes architectural components | Nodes host pods; CNIs (Flannel, Cilium) connect pods; each pod gets veth pair; pods communicate via overlay networks | Kubernetes cluster architecture |
+| **Veth Pair** | Layer 2 (Data Link) | Virtual Ethernet pair device | Connects pods to node network; one end in pod namespace, other in host; connects to bridges or OVS | Container network isolation and connectivity |
+| **Linux Bridge** | Layer 2 (Data Link) | Virtual network bridge/switch | Connects veth pairs, TAP devices; simpler alternative to OVS; standard Linux kernel component | Basic VM/container networking, local switching |
+
+
+
+## Key Relationships Summary
+
+### Container Networking Flow (Kubernetes):
+**Pod** → **Veth Pair** → **Linux Bridge/OVS** → **CNI (Flannel/Cilium)** → **Overlay (VXLAN)** → **Network**
+
