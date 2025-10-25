@@ -278,6 +278,78 @@
 ---
 
 
+## Veth Pairs (Virtual Ethernet)
+
+### What They Are
+
+Veth pairs are virtual network devices that work like a virtual ethernet cable. They always come in pairs, and traffic sent into one end immediately comes out the other end. Think of them as a software-based network pipe.
+
+
+
+### Primary Use Cases
+
+- **Container networking**: Docker and Kubernetes use veth pairs extensively to connect containers to the host network
+- **Network namespace isolation**: Connecting isolated network namespaces to the host or each other
+- **Virtual network topologies**: Creating complex network architectures for testing and development
+- **Software-defined networks**: Building flexible, programmable network infrastructures
+
+### Important Characteristics
+
+- **Low latency**: Everything happens in kernel space, providing efficient communication
+- **Independent configuration**: Each end can have its own IP address, MAC address, and MTU settings
+- **Bridge compatibility**: Commonly paired with Linux bridges to create complex topologies
+- **Performance**: Overhead is minimal but measurable under high load conditions
+
+---
+
+## VLANs (Virtual LANs)
+
+### What They Are
+
+VLANs allow you to partition a single physical network into multiple logical networks. Each VLAN operates as if it's on completely separate hardware, providing isolation and segmentation without needing additional physical switches.
+
+
+
+### Port Types
+
+**Access Ports**: These ports belong to a single VLAN and send/receive untagged traffic. They are typically used for connecting end devices like computers, printers, or phones.
+
+**Trunk Ports**: Trunk ports carry traffic for multiple VLANs simultaneously by sending tagged traffic. They are used to connect switches together or to connect switches to routers.
+
+**Native VLAN**: This is a special designation on trunk ports where untagged traffic is assigned to a specific VLAN. This is an important security consideration, as misconfiguration can lead to vulnerabilities.
+
+### Primary Use Cases
+
+- **Departmental separation**: Isolating different departments or functional groups such as HR, Engineering, and Guest networks
+- **Security isolation**: Creating security boundaries between different network segments
+- **Traffic type separation**: Segregating voice, data, and management traffic
+- **Multi-tenant environments**: Providing isolation where multiple tenants share the same physical infrastructure
+
+### Important Characteristics
+
+- **Broadcast domain reduction**: VLANs reduce broadcast domains, which improves overall network performance and efficiency
+- **Frame overhead**: VLAN tagging adds 4 bytes to each ethernet frame, which may require MTU adjustments in some scenarios
+- **Hardware requirements**: Proper VLAN functionality requires VLAN-aware switches
+- **Security considerations**: Administrators must watch for VLAN hopping attacks that can occur on misconfigured trunk ports
+
+### Inter-VLAN Communication
+
+Devices on different VLANs require a Layer 3 device such as a router or Layer 3 switch to communicate with each other. This process is called inter-VLAN routing and provides a controlled mechanism to allow cross-VLAN traffic based on security policies and requirements.
+
+---
+
+## Combining Veth Pairs and VLANs
+
+### Powerful Together
+
+The combination of veth pairs and VLANs enables sophisticated network architectures that leverage the strengths of both technologies. You can create veth pairs to establish connections between containers or namespaces, add VLAN interfaces on top of veth devices for traffic segmentation, and connect everything to VLAN-aware bridges to build complex topologies.
+
+
+
+
+
+
+
 ## Summary Diagram Concept
 
 ```
